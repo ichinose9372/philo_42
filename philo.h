@@ -6,7 +6,7 @@
 /*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 12:45:42 by yichinos          #+#    #+#             */
-/*   Updated: 2023/04/27 15:29:45 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/04/27 17:00:20 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <unistd.h>
 # include <pthread.h>
 # include <stdlib.h>
+# include <sys/time.h>
 
 typedef struct s_data
 {
@@ -24,6 +25,7 @@ typedef struct s_data
 	pthread_mutex_t	fork;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
+	struct timeval	time;
 }	t_data;
 
 #endif
