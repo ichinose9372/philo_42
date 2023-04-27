@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 12:51:07 by yichinos          #+#    #+#             */
-/*   Updated: 2023/04/27 19:05:52 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/04/27 23:13:41 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,23 +16,55 @@
 
 int	g_full;
 
-// void	check_args(int	argc, char **argv)
-// {
-// 	int	num;
+int	check_args(int argc, char **argv, t_data **data)
+{
+	int	i;
+	int	num;
 
-// 	if (argc < 5)
-// 		return (0);
-// 	num = p_atoi(argv[1]);
-// }
+	if (argc < 5)
+		return (1);
+	i = 1;
+	while (argv[i])
+	{
+		if (ft_digit(argv[i]))
+			return (1);
+		i++;
+	}
+	num = p_atoi(*argv);
+	if (num == -1)
+		return (1);
+	data = malloc(sizeof(t_data) * (num));
+	if (!data)
+		return (1);
+	i = 0;
+	while (i < num)
+	{
+		(*data)[i].num = i;
+		(*data)[i].num_philo = num;
+		(*data)[i].t_die = p_atoi(argv[2]);
+		(*data)[i].t_eat = p_atoi(argv[3]);
+		(*data)[i].must_eat = p_atoi(argv[4]);
+		if (argc == 6)
+			(*data)[i].must_eat = p_atoi(argv[5]);
+		else
+			(*data)[i].must_eat = -1;
+		if (((*data)[i].t_die == -1) || ((*data)[i].t_eat == -1)
+			|| ((*data)[i].must_eat == -1))
+			return (-1);
+		i++;
+	}
+	return (0);
+}
+
 
 long	cal_time(struct timeval time, struct timeval now)
 {
 	long	now_time;
-	long	start_time;
+	long	st_time;
 
 	now_time = (now.tv_sec) * 1000 + (now.tv_usec) / 1000;
-	start_time = (time.tv_sec) * 1000 + (time.tv_usec) / 1000;
-	return ((time.tv_sec * 1000) + (now_time - start_time));
+	st_time = (time.tv_sec) * 1000 + (time.tv_usec) / 1000;
+	return ((time.tv_sec * 1000) + (now_time - st_time));
 }
 
 void	*philo_func(void *arg)
@@ -82,11 +114,11 @@ void	*philo_func(void *arg)
 
 int	main(int argc, char	**argv)
 {
-
-	pthread_t		pid[ARGC];
-	t_data			data[ARGC];
+	t_data			*data;
 	int				i;
 
+	if (check_args(argc, argv, data))
+		return (0);
 	i = 0;
 	while (i < ARGC)
 	{
