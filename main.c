@@ -6,7 +6,7 @@
 /*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 12:51:07 by yichinos          #+#    #+#             */
-/*   Updated: 2023/04/27 23:13:41 by ichinoseyuu      ###   ########.fr       */
+/*   Updated: 2023/04/28 22:09:11 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,46 +16,71 @@
 
 int	g_full;
 
-int	check_args(int argc, char **argv, t_data **data)
+t_data	**check_args_and_malloc(int argc, char **argv, t_data **data)
 {
 	int	i;
-	int	num;
+	int j;
 
 	if (argc < 5)
-		return (1);
+		return (NULL);
 	i = 1;
 	while (argv[i])
 	{
 		if (ft_digit(argv[i]))
-			return (1);
+			return (NULL);
 		i++;
 	}
-	num = p_atoi(*argv);
-	if (num == -1)
-		return (1);
-	data = malloc(sizeof(t_data) * (num));
-	if (!data)
-		return (1);
 	i = 0;
-	while (i < num)
+	i = atoi(argv[1]);
+	if (i == -1)
+		return (NULL);
+	data = malloc(sizeof(t_data *) * i);
+	if (!data)
+		return (NULL);
+	j = 0;
+	while (j < i)
 	{
-		(*data)[i].num = i;
-		(*data)[i].num_philo = num;
-		(*data)[i].t_die = p_atoi(argv[2]);
-		(*data)[i].t_eat = p_atoi(argv[3]);
-		(*data)[i].must_eat = p_atoi(argv[4]);
-		if (argc == 6)
-			(*data)[i].must_eat = p_atoi(argv[5]);
-		else
-			(*data)[i].must_eat = -1;
-		if (((*data)[i].t_die == -1) || ((*data)[i].t_eat == -1)
-			|| ((*data)[i].must_eat == -1))
-			return (-1);
-		i++;
+		data[j] = malloc(sizeof(t_data));
+		j++;
 	}
-	return (0);
+	j = 0;
+	while (data[j])
+	{
+		gettimeofday(&data[j]->time, NULL);
+		data[j]->num_philo = j;
+		data[j]->t_die = atoi(argv[2]);
+		data[j]->t_eat = atoi(argv[3]);
+		data[j]->must_eat = atoi(argv[4]);
+		if (argc == 6)
+			data[j]->must_eat = atoi(argv[5]);
+		if (((data[j])->t_die == -1) || ((data[j])->t_eat == -1)
+			|| ((data[j])->must_eat == -1))
+			return (NULL);
+		j++;
+	}
+	j = 0;
+	while (data[j])
+	{
+		pthread_mutex_init(&(data[j])->fork, NULL);
+		j++;
+	}
+	j = 0;
+	while (data[j])
+	{
+		if (j != i - 1)
+		{
+			data[j]->left_fork = &(data[j])->fork;
+			data[j]->right_fork = &(data[j + 1])->fork;
+		}
+		else
+		{
+			data[j]->left_fork = &(data[j])->fork;
+			data[j]->right_fork = &(data[0])->fork;
+		}
+		j++;
+	}
+	return (data);
 }
-
 
 long	cal_time(struct timeval time, struct timeval now)
 {
@@ -75,38 +100,40 @@ void	*philo_func(void *arg)
 
 	data = (t_data *)arg;
 	gettimeofday(&now, NULL);
-	printf(" %ld  %d  is thinking\n", cal_time(data->time, now), data->num);
+	printf(" %ld %d is thinking\n", cal_time(data->time, now), data->num_philo);
 	while (1)
 	{
-		if (g_full >= 100)
+		if (data->must_eat == 0)
 			break ;
-		if (data->num % 2 == 0)
+		if (data->num_philo % 2 == 0)
 		{
 			pthread_mutex_lock(data->right_fork);
 			pthread_mutex_lock(data->left_fork);
 			gettimeofday(&now, NULL);
-			printf(" %ld %d has taken a fork\n", cal_time(data->time, now), data->num);
-			printf(" %ld %d is eating\n", cal_time(data->time, now), data->num);
+			printf(" %ld %d has taken a fork\n", cal_time(data->time, now), data->num_philo);
+			printf(" %ld %d is eating\n", cal_time(data->time, now), data->num_philo);
 			pthread_mutex_unlock(data->left_fork);
 			pthread_mutex_unlock(data->right_fork);
+			gettimeofday(&(data)->last_eat, NULL);
 			usleep(200);
-			g_full++;
+			data->must_eat--;
 			gettimeofday(&now, NULL);
-			printf(" %ld %d thinking\n", cal_time(data->time, now), data->num);
+			printf(" %ld %d thinking\n", cal_time(data->time, now), data->num_philo);
 		}
 		else
 		{
 			pthread_mutex_lock(data->left_fork);
 			pthread_mutex_lock(data->right_fork);
 			gettimeofday(&now, NULL);
-			printf(" %ld %d has taken a fork\n", cal_time(data->time, now), data->num);
-			printf(" %ld %d eating\n", cal_time(data->time, now), data->num);
+			printf(" %ld %d has taken a fork\n", cal_time(data->time, now), data->num_philo);
+			printf(" %ld %d eating\n", cal_time(data->time, now), data->num_philo);
 			pthread_mutex_unlock(data->right_fork);
 			pthread_mutex_unlock(data->left_fork);
+			gettimeofday(&(data)->last_eat, NULL);
 			usleep(200);
-			g_full++;
+			data->must_eat--;
 			gettimeofday(&now, NULL);
-			printf(" %ld %d thinking\n", cal_time(data->time, now), data->num);
+			printf(" %ld %d thinking\n", cal_time(data->time, now), data->num_philo);
 		}
 	}
 	pthread_exit(NULL);
@@ -114,51 +141,30 @@ void	*philo_func(void *arg)
 
 int	main(int argc, char	**argv)
 {
-	t_data			*data;
+	t_data			**data;
+	t_data			**tmp;
 	int				i;
 
-	if (check_args(argc, argv, data))
+	data = check_args_and_malloc(argc, argv, data);
+	if (data == NULL)
 		return (0);
-	i = 0;
-	while (i < ARGC)
+	tmp = data;
+	while (*tmp)
 	{
-		pthread_mutex_init(&data[i].fork, NULL);
-		i++;
+		pthread_create((&(*tmp)->pid), NULL, philo_func, *tmp);
+		tmp++;
 	}
-	i = 0;
-	while (i < ARGC)
+	tmp = data;
+	while (*tmp)
 	{
-		gettimeofday(&data[i].time, NULL);
-		if (i != ARGC -1)
-		{
-			data[i].left_fork = &data[i].fork;
-			data[i].right_fork = &data[i + 1].fork;
-		}
-		else
-		{
-			data[i].left_fork = &data[i].fork;
-			data[i].right_fork = &data[0].fork;
-		}
-		i++;
+		pthread_join((*tmp)->pid, NULL);
+		tmp++;
 	}
-	i = 0;
-	while (i < ARGC)
+	tmp = data;
+	while (*tmp)
 	{
-		data[i].num = i;
-		pthread_create(&pid[i], NULL, philo_func, &data[i]);
-		i++;
-	}
-	i = 0;
-	while (i < ARGC)
-	{
-		pthread_join(pid[i], NULL);
-		i++;
-	}
-	i = 0;
-	while (i < ARGC)
-	{
-		pthread_mutex_destroy(&data[i].fork);
-		i++;
+		pthread_mutex_destroy(&(*tmp)->fork);
+		tmp++;
 	}
 	return (0);
 }
