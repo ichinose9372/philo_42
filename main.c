@@ -3,125 +3,57 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 12:51:07 by yichinos          #+#    #+#             */
-/*   Updated: 2023/04/30 18:50:12 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/01 21:05:15 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-t_data	**check_args_and_malloc(int argc, char **argv, t_data **data)
-{
-	int	i;
-	int	j;
-
-	if (argc < 5)
-		return (NULL);
-	i = 1;
-	while (argv[i])
-	{
-		if (ft_digit(argv[i]))
-			return (NULL);
-		i++;
-	}
-	i = 0;
-	i = atoi(argv[1]);
-	if (i == -1)
-		return (NULL);
-	data = malloc(sizeof(t_data *) * i);
-	if (!data)
-		return (NULL);
-	j = 0;
-	while (j < i)
-	{
-		data[j] = malloc(sizeof(t_data));
-		j++;
-	}
-	return (data);
-}
-
-void	init_data(char **argv, t_data **data, t_moniter *monu)
-{
-	int	i;
-	int	num;
-
-	num = atoi(argv[1]);
-	i = 0;
-	while (i < num)
-	{
-		pthread_mutex_init(&(data[i]->fork), NULL);
-		i++;
-	}
-	i = 0;
-	while (i < num)
-	{
-		data[i]->flag = 0;
-		data[i]->count = 0;
-		data[i]->num_philo = i;
-		data[i]->moniter = monu;
-		if (i == num - 1)
-		{
-			data[i]->left_fork = &(data[i]->fork);
-			data[i]->right_fork = &(data[(i + 1) % num]->fork);
-		}
-		else
-		{
-			data[i]->left_fork = &(data[i]->fork);
-			data[i]->right_fork = &(data[i + 1]->fork);
-		}
-		i++;
-	}
-}
-
-void	set_moniter(t_moniter	*moniter, t_data	**main, char	**argv)
-{
-
-	moniter->data = main;
-	moniter->t_eat = atoi(argv[2]);
-	moniter->t_sleep = atoi(argv[3]);
-	moniter->t_die = atoi(argv[4]);
-	if (argv[5])
-		moniter->must_eat = atoi(argv[5]);
-	gettimeofday(&(moniter->moniter_time), NULL);
-	pthread_mutex_init(&(moniter->mutex), NULL);
-}
-
-long	cal_time(struct timeval time, struct timeval now)
-{
-	long	now_time;
-	long	st_time;
-
-	now_time = (now.tv_sec) * 1000 + (now.tv_usec) / 1000;
-	st_time = (time.tv_sec) * 1000 + (time.tv_usec) / 1000;
-	return ((time.tv_sec * 1000) + (now_time - st_time));
-}
-
 void	*moniter_func(void *arg)
 {
 	t_moniter	*moniter;
-	t_data		**tmp;
+	t_data		**data;
 
 	moniter = (t_moniter *)arg;
 	while (1)
 	{
-		tmp = moniter->data;
-		while (moniter->data)
+		data = moniter->data;
+		while (*data)
 		{
-			// if (moniter->must_eat < (*(moniter->data))->count)
-			// {
-			// 	printf("NNNNNGGGG\n");
-			// 	(*moniter->data)->flag = 1;
-			// 	break ;
-			// }
-			// else
-			// 	printf("OOOKKKKK\n");
-			printf("moniter \n");
-			moniter->data++;
-			usleep(1000);
+			pthread_mutex_lock(&(*data)->start_mutex);
+			pthread_mutex_lock(&(*data)->last_mutex);
+			if ((moniter->t_die) < (*data)->start_eat - (*data)->last_eat)
+			{
+				pthread_mutex_unlock(&(*data)->start_mutex);
+				pthread_mutex_unlock(&(*data)->last_mutex);
+				pthread_mutex_lock(&(moniter)->flag_mutex);
+				moniter->flag = 1;
+				printf("finish die\n");
+				pthread_mutex_unlock(&(moniter)->flag_mutex);
+				return (NULL);
+			}
+			else
+			{
+				pthread_mutex_unlock(&(*data)->start_mutex);
+				pthread_mutex_unlock(&(*data)->last_mutex);
+			}
+			pthread_mutex_lock(&(*data)->eat_mutex);
+			if ((*data)->eat_count >= moniter->must_eat)
+			{
+				pthread_mutex_unlock(&(*data)->eat_mutex);
+				pthread_mutex_lock(&(moniter)->flag_mutex);
+				moniter->flag = 1;
+				printf("max eat\n");
+				pthread_mutex_unlock(&(moniter)->flag_mutex);
+				return (NULL);
+			}
+			pthread_mutex_unlock(&(*data)->eat_mutex);
+			usleep(20);
+			data++;
 		}
-		moniter->data = tmp;
 	}
 }
 
@@ -131,38 +63,84 @@ void	*philo_func(void *arg)
 	t_moniter		*moni;
 
 	data = (t_data *)arg;
-	printf("%d is thinking\n", data->num_philo);
+	moni = data->moniter;
 	while (1)
 	{
+		printf("%ld %d is thinking\n", get_now_time(), data->num_philo);
 		if (data->num_philo % 2 == 0)
 		{
-			pthread_mutex_lock(&(data->moniter->mutex));
-			pthread_mutex_unlock(&(data->moniter->mutex));
-			if (data->flag == 1)
+			pthread_mutex_lock(&(moni)->flag_mutex);
+			if (moni->flag)
+			{
+				pthread_mutex_unlock(&(moni)->flag_mutex);
 				break ;
+			}
+			else
+				pthread_mutex_unlock(&(moni)->flag_mutex);
 			pthread_mutex_lock(data->left_fork);
 			pthread_mutex_lock(data->right_fork);
-			printf("%d has taken a fork\n", data->num_philo);
-			printf("%d is eating\n", data->num_philo);
-			data->count++;
-			usleep(400);
+			printf("%ld %d has taken a fork\n", get_now_time(), data->num_philo);
+			pthread_mutex_lock(&(data->start_mutex));
+			data->start_eat = get_now_time();
+			pthread_mutex_unlock(&(data->start_mutex));
+			printf("%ld %d is eating\n", get_now_time(), data->num_philo);
+			pthread_mutex_lock(&(data->eat_mutex));
+			data->eat_count++;
+			usleep((moni->t_eat));
+			pthread_mutex_unlock(&(data->eat_mutex));
 			pthread_mutex_unlock(data->right_fork);
 			pthread_mutex_unlock(data->left_fork);
-			printf("%d thinking\n", data->num_philo);
+			pthread_mutex_lock(&(data->last_mutex));
+			data->last_eat = get_now_time();
+			pthread_mutex_unlock(&(data->last_mutex));
+			pthread_mutex_lock(&(moni)->flag_mutex);
+			if (moni->flag)
+			{
+				pthread_mutex_unlock(&(moni)->flag_mutex);
+				break ;
+			}
+			else
+				pthread_mutex_unlock(&(moni)->flag_mutex);
+			printf("%ld %d sleepind\n", get_now_time(), data->num_philo);
+			usleep((moni->t_sleep));
 		}
 		else
 		{
-			pthread_mutex_lock(&(data->moniter->mutex));
-			//監視スレッドチェック処理。
-			pthread_mutex_unlock(&(data->moniter->mutex));
+			printf("%ld %d is thinking\n", get_now_time(), data->num_philo);
+			pthread_mutex_lock(&(moni)->flag_mutex);
+			if (moni->flag)
+			{
+				pthread_mutex_unlock(&(moni)->flag_mutex);
+				break;
+			}
+			else
+				pthread_mutex_unlock(&(moni)->flag_mutex);
 			pthread_mutex_lock(data->right_fork);
 			pthread_mutex_lock(data->left_fork);
-			printf("%d has taken a fork\n", data->num_philo);
-			printf("%d eating\n", data->num_philo);
-			data->count++;
+			printf("%ld %d has taken a fork\n",get_now_time(), data->num_philo);
+			pthread_mutex_lock(&(data->start_mutex));
+			data->start_eat = get_now_time();
+			pthread_mutex_unlock(&(data->start_mutex));
+			printf("%ld %d eating\n", get_now_time(), data->num_philo);
+			pthread_mutex_lock(&(data->eat_mutex));
+			data->eat_count++;
+			usleep((moni->t_eat));
+			pthread_mutex_unlock(&(data->eat_mutex));
 			pthread_mutex_unlock(data->left_fork);
 			pthread_mutex_unlock(data->right_fork);
-			printf("%d thinking\n", data->num_philo);
+			pthread_mutex_lock((&data->last_mutex));
+			data->last_eat = get_now_time();
+			pthread_mutex_unlock(&(data->last_mutex));
+			pthread_mutex_lock(&(moni)->flag_mutex);
+			if (moni->flag)
+			{
+				pthread_mutex_unlock(&(moni)->flag_mutex);
+				break ;
+			}
+			else
+				pthread_mutex_unlock(&(moni)->flag_mutex);
+			printf("%ld %d sleeping\n",get_now_time(), data->num_philo);
+			usleep((moni->t_sleep));
 		}
 	}
 	pthread_exit(NULL);
@@ -195,6 +173,7 @@ int	main(int argc, char	**argv)
 	i = 0;
 	while (i < atoi(argv[1]))
 		pthread_join(data[i++]->pid, NULL);
+	pthread_join(moniter->pid, NULL);
 	i = 0;
 	while (i < atoi(argv[1]))
 		pthread_mutex_destroy(&(data[i++]->fork));

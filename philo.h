@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 12:45:42 by yichinos          #+#    #+#             */
-/*   Updated: 2023/04/30 14:54:34 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/01 17:02:25 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,13 @@ typedef struct s_data
 	pthread_mutex_t		fork;
 	pthread_mutex_t		*left_fork;
 	pthread_mutex_t		*right_fork;
-	struct timeval		time;
 	struct s_moniter	*moniter;
-	int					count;
-	int					flag;
+	int					eat_count;
+	pthread_mutex_t		eat_mutex;
+	long				start_eat;
+	pthread_mutex_t		start_mutex;
+	long				last_eat;
+	pthread_mutex_t		last_mutex;
 }	t_data;
 
 typedef struct s_moniter
@@ -41,13 +44,20 @@ typedef struct s_moniter
 	int				t_eat;
 	int				must_eat;
 	pthread_t		pid;
-	struct timeval	moniter_time;
-	pthread_mutex_t	mutex;
+	int				flag;
+	pthread_mutex_t	flag_mutex;
 }	t_moniter;
 
 //check_arg
-int	ft_digit(char *str);
-int p_atoi(char *str);
+int		ft_digit(char *str);
+t_data	**check_args_and_malloc(int argc, char **argv, t_data **data);
+//init_data
+void	init_data(char **argv, t_data **data, t_moniter *monu);
+void	set_moniter(t_moniter *moniter, t_data **main, char **argv);
+
+//set_time
+long	cal_time(struct timeval time, struct timeval now);
+long	get_now_time(void);
 
 #endif
 
