@@ -6,7 +6,7 @@
 /*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 22:26:08 by ichinoseyuu       #+#    #+#             */
-/*   Updated: 2023/05/02 17:05:40 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/02 17:07:31 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ int	ft_digit(char *str)
 	int	i;
 
 	i = 0;
-	if (!(str[i] >= '0' && str[i] <= '9') && !(str[i] == '+' && str[i + 1] != '\0'))
+	if (!(str[i] >= '0' && str[i] <= '9')
+		&& !(str[i] == '+' && str[i + 1] != '\0'))
 		return (1);
 	i++;
 	while (str[i])
@@ -61,9 +62,8 @@ t_data	**check_args_and_malloc(int argc, char **argv, t_data **data)
 	i = 1;
 	while (argv[i])
 	{
-		if (ft_digit(argv[i]))
+		if (ft_digit(argv[i++]))
 			return (NULL);
-		i++;
 	}
 	i = 0;
 	i = philo_atoi(argv[1]);
@@ -74,10 +74,7 @@ t_data	**check_args_and_malloc(int argc, char **argv, t_data **data)
 		return (NULL);
 	j = 0;
 	while (j < i)
-	{
-		data[j] = malloc(sizeof(t_data));
-		j++;
-	}
+		data[++] = malloc(sizeof(t_data));
 	data[j] = NULL;
 	return (data);
 }
