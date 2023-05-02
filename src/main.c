@@ -6,7 +6,7 @@
 /*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 12:51:07 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/02 12:53:46 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/02 16:51:31 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	*moniter_func(void *arg)
 				pthread_mutex_unlock(&(*data)->last_mutex);
 				pthread_mutex_lock(&(moniter)->flag_mutex);
 				moniter->stop_flag = 1;
-				printf("%d is died\n", (*data)->num_philo);
+				printf("%ld %d died\n", get_now_time(), (*data)->num_philo);
 				pthread_mutex_unlock(&(moniter)->flag_mutex);
 				return (NULL);
 			}
@@ -51,7 +51,6 @@ void	*moniter_func(void *arg)
 				if (count == moniter->philo_count)
 				{
 					moniter->stop_flag = 1;
-					printf("ALL max eat\n");
 					pthread_mutex_unlock(&(moniter)->flag_mutex);
 					return (NULL);
 				}
@@ -96,12 +95,7 @@ void	*philo_func(void *arg)
 			printf("%ld %d is eating\n", get_now_time(), data->num_philo);
 			pthread_mutex_lock(&(data->eat_mutex));
 			data->eat_count++;
-			while (1)
-			{
-				time = get_now_time();
-				if (time - (data)->start_eat >= moni->t_eat)
-					break ;
-			}
+			ft_usleep((data)->start_eat, moni->t_eat);
 			pthread_mutex_unlock(&(data->eat_mutex));
 			pthread_mutex_unlock(data->right_fork);
 			pthread_mutex_unlock(data->left_fork);
@@ -116,13 +110,8 @@ void	*philo_func(void *arg)
 			}
 			else
 				pthread_mutex_unlock(&(moni)->flag_mutex);
-			printf("%ld %d sleepind\n", get_now_time(), data->num_philo);
-			while (1)
-			{
-				time = get_now_time();
-				if (time - (data)->last_eat >= moni->t_sleep)
-					break ;
-			}
+			printf("%ld %d  is sleeping\n", get_now_time(), data->num_philo);
+			ft_usleep((data)->last_eat, moni->t_sleep);
 		}
 		else
 		{
@@ -141,15 +130,10 @@ void	*philo_func(void *arg)
 			pthread_mutex_lock(&(data->start_mutex));
 			data->start_eat = get_now_time();
 			pthread_mutex_unlock(&(data->start_mutex));
-			printf("%ld %d eating\n", get_now_time(), data->num_philo);
+			printf("%ld %d is eating\n", get_now_time(), data->num_philo);
 			pthread_mutex_lock(&(data->eat_mutex));
 			data->eat_count++;
-			while (1)
-			{
-				time = get_now_time();
-				if (time - (data)->start_eat >= moni->t_eat)
-					break ;
-			}
+			ft_usleep((data)->start_eat, moni->t_eat);
 			pthread_mutex_unlock(&(data->eat_mutex));
 			pthread_mutex_unlock(data->left_fork);
 			pthread_mutex_unlock(data->right_fork);
@@ -164,13 +148,8 @@ void	*philo_func(void *arg)
 			}
 			else
 				pthread_mutex_unlock(&(moni)->flag_mutex);
-			printf("%ld %d sleeping\n", get_now_time(), data->num_philo);
-			while (1)
-			{
-				time = get_now_time();
-				if (time - (data)->last_eat >= moni->t_sleep)
-					break ;
-			}
+			printf("%ld %d is sleeping\n", get_now_time(), data->num_philo);
+			ft_usleep((data)->last_eat, moni->t_sleep);
 		}
 	}
 	pthread_exit(NULL);
@@ -183,6 +162,7 @@ int	main(int argc, char	**argv)
 	int				i;
 
 	i = 0;
+	data = NULL;
 	data = check_args_and_malloc(argc, argv, data);
 	if (data == NULL)
 		return (0);
@@ -194,6 +174,7 @@ int	main(int argc, char	**argv)
 	}
 	init_data(argv, data, moniter);
 	set_moniter(moniter, data, argv);
+	return (0);
 	pthread_create(&(moniter->pid), NULL, moniter_func, moniter);
 	while (i < atoi(argv[1]))
 	{
@@ -207,6 +188,11 @@ int	main(int argc, char	**argv)
 	i = 0;
 	while (i < atoi(argv[1]))
 		pthread_mutex_destroy(&(data[i++]->fork));
+	pthread_mutex_destroy(&(moniter)->flag_mutex);
+	i = 0;
+	while (i < atoi(argv[1]))
+		free(data[i++]);
 	free(data);
+	free(moniter);
 	return (0);
 }

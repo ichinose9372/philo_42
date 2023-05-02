@@ -6,7 +6,7 @@
 /*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 12:45:42 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/02 12:27:54 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/02 16:51:54 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ typedef struct s_moniter
 //check_arg
 int		ft_digit(char *str);
 t_data	**check_args_and_malloc(int argc, char **argv, t_data **data);
+int		philo_atoi(char *str);
+
 //init_data
 void	init_data(char **argv, t_data **data, t_moniter *monu);
 void	set_moniter(t_moniter *moniter, t_data **main, char **argv);
@@ -59,6 +61,7 @@ void	set_moniter(t_moniter *moniter, t_data **main, char **argv);
 //set_time
 long	cal_time(struct timeval time, struct timeval now);
 long	get_now_time(void);
+void	ft_usleep(long start, long time_to);
 
 #endif
 
