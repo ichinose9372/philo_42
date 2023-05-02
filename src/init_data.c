@@ -6,7 +6,7 @@
 /*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/01 14:16:28 by ichinoseyuu       #+#    #+#             */
-/*   Updated: 2023/05/02 12:50:47 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/02 16:54:52 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void init_data(char **argv, t_data **data, t_moniter *monu)
 
 void set_moniter(t_moniter *moniter, t_data **main, char **argv)
 {
-
+	printf("%d\t%d\t%d\t%d\n", philo_atoi(argv[1]), philo_atoi(argv[2]), philo_atoi(argv[3]), philo_atoi(argv[4]));
 	moniter->data = main;
 	moniter->philo_count = atoi(argv[1]);
 	moniter->t_die = atoi(argv[2]);
