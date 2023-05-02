@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_data.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
+/*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/01 14:16:28 by ichinoseyuu       #+#    #+#             */
-/*   Updated: 2023/05/01 17:10:15 by ichinoseyuu      ###   ########.fr       */
+/*   Updated: 2023/05/02 12:50:47 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,12 @@ void set_moniter(t_moniter *moniter, t_data **main, char **argv)
 {
 
 	moniter->data = main;
-	moniter->t_eat = atoi(argv[2]);
-	moniter->t_sleep = atoi(argv[3]);
-	moniter->t_die = atoi(argv[4]);
+	moniter->philo_count = atoi(argv[1]);
+	moniter->t_die = atoi(argv[2]);
+	moniter->t_eat = atoi(argv[3]);
+	moniter->t_sleep = atoi(argv[4]);
 	if (argv[5])
 		moniter->must_eat = atoi(argv[5]);
-	moniter->flag = 0;
+	moniter->stop_flag = 0;
 	pthread_mutex_init(&(moniter)->flag_mutex, NULL);
 }

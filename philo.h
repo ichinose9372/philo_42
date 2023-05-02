@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
+/*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 12:45:42 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/01 17:02:25 by ichinoseyuu      ###   ########.fr       */
+/*   Updated: 2023/05/02 12:27:54 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,9 @@ typedef struct s_moniter
 	int				t_eat;
 	int				must_eat;
 	pthread_t		pid;
-	int				flag;
+	int				stop_flag;
 	pthread_mutex_t	flag_mutex;
+	int				philo_count;
 }	t_moniter;
 
 //check_arg
