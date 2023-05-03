@@ -6,7 +6,7 @@
 /*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 12:51:07 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/02 16:51:31 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/03 12:20:11 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	*moniter_func(void *arg)
 				pthread_mutex_unlock(&(*data)->last_mutex);
 				pthread_mutex_lock(&(moniter)->flag_mutex);
 				moniter->stop_flag = 1;
-				printf("%ld %d died\n", get_now_time(), (*data)->num_philo);
+				// printf("%ld %d died\n", get_now_time(), (*data)->num_philo);
 				pthread_mutex_unlock(&(moniter)->flag_mutex);
 				return (NULL);
 			}
@@ -81,6 +81,7 @@ void	*philo_func(void *arg)
 			pthread_mutex_lock(&(moni)->flag_mutex);
 			if (moni->stop_flag)
 			{
+				printf("%ld %d died\n", get_now_time(), (data)->num_philo);
 				pthread_mutex_unlock(&(moni)->flag_mutex);
 				break ;
 			}
@@ -119,6 +120,7 @@ void	*philo_func(void *arg)
 			pthread_mutex_lock(&(moni)->flag_mutex);
 			if (moni->stop_flag)
 			{
+				printf("%ld %d died\n", get_now_time(), (data)->num_philo);
 				pthread_mutex_unlock(&(moni)->flag_mutex);
 				break ;
 			}
@@ -162,37 +164,15 @@ int	main(int argc, char	**argv)
 	int				i;
 
 	i = 0;
-	data = NULL;
-	data = check_args_and_malloc(argc, argv, data);
-	if (data == NULL)
+	moniter = NULL;
+	data = malloc_data(argc, argv);
+	moniter = make_moniter_init(data, argv);
+	if (moniter == NULL || data == NULL)
 		return (0);
-	moniter = malloc(sizeof(t_moniter));
-	if (moniter == NULL)
-	{
-		free(data);
-		return (0);
-	}
 	init_data(argv, data, moniter);
-	set_moniter(moniter, data, argv);
-	return (0);
-	pthread_create(&(moniter->pid), NULL, moniter_func, moniter);
-	while (i < atoi(argv[1]))
-	{
-		pthread_create((&(data[i])->pid), NULL, philo_func, data[i]);
-		i++;
-	}
-	i = 0;
-	while (i < atoi(argv[1]))
-		pthread_join(data[i++]->pid, NULL);
-	pthread_join(moniter->pid, NULL);
-	i = 0;
-	while (i < atoi(argv[1]))
-		pthread_mutex_destroy(&(data[i++]->fork));
-	pthread_mutex_destroy(&(moniter)->flag_mutex);
-	i = 0;
-	while (i < atoi(argv[1]))
-		free(data[i++]);
-	free(data);
+	philo(data, moniter, philo_atoi(argv[1]));
+	mutex_del(data, moniter, philo_atoi(argv[1]));
+	free_all(data);
 	free(moniter);
 	return (0);
 }

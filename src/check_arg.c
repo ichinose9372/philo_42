@@ -6,7 +6,7 @@
 /*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 22:26:08 by ichinoseyuu       #+#    #+#             */
-/*   Updated: 2023/05/02 17:07:31 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/03 11:40:51 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,29 +52,47 @@ int	ft_digit(char *str)
 	return (0);
 }
 
-t_data	**check_args_and_malloc(int argc, char **argv, t_data **data)
+int	check_args(int argc, char **argv)
 {
 	int	i;
-	int	j;
 
 	if (argc < 5)
-		return (NULL);
+		return (-1);
 	i = 1;
 	while (argv[i])
 	{
 		if (ft_digit(argv[i++]))
-			return (NULL);
+			return (-1);
 	}
 	i = 0;
 	i = philo_atoi(argv[1]);
+	if (i == -1)
+		return (-1);
+	return (i);
+}
+
+t_data	**malloc_data(int argc, char **argv)
+{
+	int		i;
+	t_data	**data;
+
+	i = check_args(argc, argv);
 	if (i == -1)
 		return (NULL);
 	data = malloc(sizeof(t_data *) * (i + 1));
 	if (!data)
 		return (NULL);
-	j = 0;
-	while (j < i)
-		data[++] = malloc(sizeof(t_data));
-	data[j] = NULL;
+	i = 0;
+	while (i < philo_atoi(argv[1]))
+	{
+		data[i] = malloc(sizeof(t_data));
+		if (data[i] == NULL)
+		{
+			free_all(data);
+			return (NULL);
+		}
+		i++;
+	}
+	data[i] = NULL;
 	return (data);
 }
