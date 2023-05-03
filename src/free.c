@@ -1,35 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   set_time.c                                         :+:      :+:    :+:   */
+/*   free_.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/01 14:18:08 by ichinoseyuu       #+#    #+#             */
-/*   Updated: 2023/05/03 11:47:37 by yichinos         ###   ########.fr       */
+/*   Created: 2023/05/03 11:09:54 by yichinos          #+#    #+#             */
+/*   Updated: 2023/05/03 11:12:00 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long	get_now_time(void)
+void	free_all(t_data	**data)
 {
-	long			now;
-	struct timeval	tmp;
+	int	i;
 
-	gettimeofday(&tmp, NULL);
-	now = ((tmp.tv_sec) * 1000) + ((tmp.tv_usec) / 1000);
-	return (now);
-}
-
-void	ft_usleep(long check_time, long time_to)
-{
-	long int	time;
-
-	while (1)
+	i = 0;
+	while (data[i])
 	{
-		time = get_now_time();
-		if (time - check_time >= time_to)
-			return ;
+		free(data[i]);
+		i++;
 	}
+	free(data);
 }
