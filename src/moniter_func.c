@@ -6,11 +6,32 @@
 /*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 12:22:02 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/03 14:29:12 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/03 17:27:30 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	all_check_frag(t_moniter *moniter, t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < moniter->philo_count)
+	{
+		pthread_mutex_lock(data->eat_count);
+		if (data->eat_count == monitert->must_eat)
+		{
+			i++;
+		}
+		else
+		{
+			pthread_mutex_unlock(data->eat_count);
+			return (0);
+		}
+	}
+	return (1);
+}
 
 int	moni_time_check(t_moniter *moniter, t_data *data)
 {
@@ -36,16 +57,15 @@ int	moni_time_check(t_moniter *moniter, t_data *data)
 int	moni_eat_count_check(t_moniter *moniter, t_data *data)
 {
 	int		count;
+	int		i;
 
-	count = 0;
 	pthread_mutex_lock(&data->eat_mutex);
 	if (data->eat_count >= moniter->must_eat)
 	{
 		pthread_mutex_unlock(&data->eat_mutex);
-		pthread_mutex_lock(&moniter->flag_mutex);
-		count++;
-		if (count == moniter->philo_count)
+		if (all_check_frag(moniter, data))
 		{
+			pthread_mutex_lock(&moniter->flag_mutex);
 			moniter->stop_flag = 1;
 			pthread_mutex_unlock(&moniter->flag_mutex);
 			return (1);
@@ -61,6 +81,7 @@ void	*moniter_func(void *arg)
 {
 	t_moniter	*moniter;
 	t_data		**data;
+
 
 	moniter = (t_moniter *)arg;
 	while (1)
