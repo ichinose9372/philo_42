@@ -6,25 +6,30 @@
 /*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/01 14:16:28 by ichinoseyuu       #+#    #+#             */
-/*   Updated: 2023/05/03 14:45:01 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/04 17:12:47 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	data_mutex_set(t_data **data, int num)
+int	data_mutex_set(t_data **data, int num)
 {
 	int	i;
 
 	i = 0;
 	while (i < num)
 	{
-		pthread_mutex_init(&(data[i]->fork), NULL);
-		pthread_mutex_init(&(data[i]->eat_mutex), NULL);
-		pthread_mutex_init(&(data[i]->last_mutex), NULL);
-		pthread_mutex_init(&(data[i]->start_mutex), NULL);
+		if (pthread_mutex_init(&(data[i]->fork), NULL) != 0)
+			return (1);
+		if (pthread_mutex_init(&(data[i]->eat_mutex), NULL) != 0)
+			return (1);
+		if (pthread_mutex_init(&(data[i]->last_mutex), NULL) != 0)
+			return (1);
+		if (pthread_mutex_init(&(data[i]->start_mutex), NULL) != 0)
+			return (1);
 		i++;
 	}
+	return (0);
 }
 
 void	data_other_set(t_data **data, int num, t_moniter *mon)
@@ -53,14 +58,15 @@ void	data_other_set(t_data **data, int num, t_moniter *mon)
 	}
 }
 
-
-void	init_data(char **argv, t_data **data, t_moniter *mon)
+int	init_data(char **argv, t_data **data, t_moniter *mon)
 {
 	int	num;
 
 	num = philo_atoi(argv[1]);
-	data_mutex_set(data, num);
+	if (data_mutex_set(data, num))
+		return (1);
 	data_other_set(data, num, mon);
+	return (0);
 }
 
 t_moniter	*make_moniter_init(t_data **main, char **argv)
@@ -78,6 +84,7 @@ t_moniter	*make_moniter_init(t_data **main, char **argv)
 	if (argv[5])
 		moniter->must_eat = philo_atoi(argv[5]);
 	moniter->stop_flag = 0;
-	pthread_mutex_init(&(moniter)->flag_mutex, NULL);
+	if (pthread_mutex_init(&(moniter)->flag_mutex, NULL) != 0)
+		return (NULL);
 	return (moniter);
 }
