@@ -6,7 +6,7 @@
 #    By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/02 10:40:35 by yichinos          #+#    #+#              #
-#    Updated: 2023/05/03 13:47:23 by yichinos         ###   ########.fr        #
+#    Updated: 2023/05/04 17:01:15 by yichinos         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ OBJDIR = obj
 INCLUDE = inc
 RM = rm -rf
 
-SRCS = main.c init_data.c check_arg.c set_time.c free.c philo.c moniter_func.c philo_func.c
+SRCS = main.c init_data.c check_arg.c set_time.c free.c philo.c moniter_func.c philo_func.c only_one.c
 OBJS = $(SRCS:%.c=$(OBJDIR)/%.o)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
