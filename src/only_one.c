@@ -6,7 +6,7 @@
 /*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 16:54:37 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/04 17:06:57 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/04 17:47:40 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,14 @@ void	*only_one_func(void *arg)
 	pthread_exit(NULL);
 }
 
-void	only_one(t_data *data)
+int	only_one(t_data *data)
 {
-	pthread_create(&(data->pid), NULL, only_one_func, data);
+	if(pthread_create(&(data->pid), NULL, only_one_func, data) != 0)
+		return (1);
 	pthread_join(&(*data->pid), NULL);
 	pthread_mutex_destroy(&(data->fork));
 	pthread_mutex_destroy(&(data->eat_mutex));
 	pthread_mutex_destroy(&(data->start_mutex));
 	pthread_mutex_destroy(&(data->last_mutex));
-	return ;
+	return (0);
 }

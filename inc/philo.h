@@ -6,7 +6,7 @@
 /*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 12:45:42 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/04 17:02:24 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/04 17:46:26 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,10 @@ int			check_args(int argc, char **argv);
 int			philo_atoi(char *str);
 //init_data
 t_data		**malloc_data(int argc, char **argv);
-void		init_data(char **argv, t_data **data, t_moniter *monu);
+int			init_data(char **argv, t_data **data, t_moniter *monu);
 t_moniter	*make_moniter_init(t_data **main, char **argv);
 //main func
-void		philo(t_data **data, t_moniter *moniter, int num);
+int			philo(t_data **data, t_moniter *moniter, int num);
 void		mutex_del(t_data **data, t_moniter *moniter, int num);
 //moniter
 int			moni_time_check(t_moniter *moniter, t_data *data);
@@ -79,7 +79,7 @@ void		ft_usleep(long start, long time_to);
 void		free_all(t_data	**data);
 void		print_status(t_data *data, t_moniter *moniter, int status);
 //only_one
-void		only_one(t_data *data);
+int			only_one(t_data *data);
 void		*only_one_func(void *arg);
 
 
