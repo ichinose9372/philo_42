@@ -6,7 +6,7 @@
 /*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 12:45:42 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/04 16:45:02 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/04 17:02:24 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,10 @@ void		ft_usleep(long start, long time_to);
 //
 void		free_all(t_data	**data);
 void		print_status(t_data *data, t_moniter *moniter, int status);
+//only_one
 void		only_one(t_data *data);
+void		*only_one_func(void *arg);
+
+
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 12:04:53 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/04 16:48:39 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/04 17:00:49 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,4 @@ void	mutex_del(t_data **data, t_moniter *moniter, int num)
 		i++;
 	}
 	pthread_mutex_destroy(&(moniter)->flag_mutex);
-}
-
-void	only_one(t_data *data)
-{
-	printf("%ld %d has taken a fork\n", get_now_time(), data->num_philo);
-	return ;
 }
