@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   only_one.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 16:54:37 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/04 17:47:40 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/04 21:19:00 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	*only_one_func(void *arg)
 
 int	only_one(t_data *data)
 {
-	if(pthread_create(&(data->pid), NULL, only_one_func, data) != 0)
+	if (pthread_create(&(data->pid), NULL, only_one_func, data) != 0)
 		return (1);
 	pthread_join(&(*data->pid), NULL);
 	pthread_mutex_destroy(&(data->fork));

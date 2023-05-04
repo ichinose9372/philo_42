@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moniter_func.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 12:22:02 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/04 16:26:13 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/04 22:53:57 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,17 +39,20 @@ int	moni_eat_count_check(t_moniter *moniter, t_data *data, int *num)
 	pthread_mutex_lock(&data->eat_mutex);
 	if (data->eat_count == moniter->must_eat)
 	{
-		pthread_mutex_unlock(&data->eat_mutex);
 		*num += 1;
 		if (*num == moniter->philo_count)
 		{
+			pthread_mutex_unlock(&data->eat_mutex);
 			pthread_mutex_lock(&moniter->flag_mutex);
 			moniter->stop_flag = 1;
 			pthread_mutex_unlock(&moniter->flag_mutex);
 			return (1);
 		}
 		else
+		{
+			pthread_mutex_unlock(&data->eat_mutex);
 			return (0);
+		}
 	}
 	else
 		pthread_mutex_unlock(&data->eat_mutex);
@@ -73,7 +76,7 @@ void	*moniter_func(void *arg)
 				return (NULL);
 			if (moni_eat_count_check(moniter, *data, &num))
 				return (NULL);
-			usleep(20);
+			usleep(30);
 			data++;
 		}
 	}
