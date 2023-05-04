@@ -6,7 +6,7 @@
 /*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 12:21:39 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/04 21:18:38 by ichinoseyuu      ###   ########.fr       */
+/*   Updated: 2023/05/04 23:06:28 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,19 +84,14 @@ void	*philo_func(void *arg)
 	{
 		print_status(data, moniter, 0);
 		if (data->num_philo % 2 == 1)
-		{
 			philo_eat_right(data, moniter);
-			if (flag_check(moniter))
-				break ;
-			philo_sleep(data, moniter);
-		}
 		else
-		{
 			philo_eat_left(data, moniter);
-			if (flag_check(moniter))
-				break ;
-			philo_sleep(data, moniter);
-		}
+		if (flag_check(moniter))
+			break ;
+		philo_sleep(data, moniter);
+		if (flag_check(moniter))
+			break ;
 	}
 	pthread_exit(NULL);
 }
