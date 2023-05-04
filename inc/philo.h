@@ -6,7 +6,7 @@
 /*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 12:45:42 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/03 14:30:50 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/04 16:45:02 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdlib.h>
 # include <sys/time.h>
 # include <limits.h>
+# include <string.h>
 
 typedef struct s_data
 {
@@ -62,11 +63,12 @@ void		philo(t_data **data, t_moniter *moniter, int num);
 void		mutex_del(t_data **data, t_moniter *moniter, int num);
 //moniter
 int			moni_time_check(t_moniter *moniter, t_data *data);
-int			moni_eat_count_check(t_moniter *moniter, t_data *data);
+int			moni_eat_count_check(t_moniter *moniter, t_data *data, int *num);
 void		*moniter_func(void *arg);
 //philo
-int			flag_check(t_data *data, t_moniter *moniter);
-void		philo_eat(t_data *data, t_moniter *moniter);
+int			flag_check(t_moniter *moniter);
+void		philo_eat_left(t_data *data, t_moniter *moniter);
+void		philo_eat_right(t_data *data, t_moniter *moniter);
 void		philo_sleep(t_data *data, t_moniter *moniter);
 void		*philo_func(void *arg);
 
@@ -75,6 +77,7 @@ long		get_now_time(void);
 void		ft_usleep(long start, long time_to);
 //
 void		free_all(t_data	**data);
+void		print_status(t_data *data, t_moniter *moniter, int status);
+void		only_one(t_data *data);
+
 #endif
-
-
