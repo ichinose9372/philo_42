@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_data.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/01 14:16:28 by ichinoseyuu       #+#    #+#             */
-/*   Updated: 2023/05/04 17:12:47 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/05 14:06:03 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,4 +87,30 @@ t_moniter	*make_moniter_init(t_data **main, char **argv)
 	if (pthread_mutex_init(&(moniter)->flag_mutex, NULL) != 0)
 		return (NULL);
 	return (moniter);
+}
+
+t_data	**malloc_data(int argc, char **argv)
+{
+	int		i;
+	t_data	**data;
+
+	i = check_args(argc, argv);
+	if (i == -1)
+		return (NULL);
+	data = malloc(sizeof(t_data *) * (i + 1));
+	if (!data)
+		return (NULL);
+	i = 0;
+	while (i < philo_atoi(argv[1]))
+	{
+		data[i] = malloc(sizeof(t_data));
+		if (data[i] == NULL)
+		{
+			free_data(data);
+			return (NULL);
+		}
+		i++;
+	}
+	data[i] = NULL;
+	return (data);
 }

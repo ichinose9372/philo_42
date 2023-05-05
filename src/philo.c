@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 12:04:53 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/04 17:48:00 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/05 14:14:27 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	philo(t_data **data, t_moniter *moniter, int num)
+void	philo(t_data **data, t_moniter *moniter, int num)
 {
 	int	i;
 
@@ -20,21 +20,21 @@ int	philo(t_data **data, t_moniter *moniter, int num)
 	if (num == 1)
 	{
 		only_one(*data);
-		return(0);
+		return ;
 	}
 	if (pthread_create(&(moniter->pid), NULL, moniter_func, moniter) != 0)
-		return (1);
+		return ;
 	while (i < num)
 	{
 		if (pthread_create((&(data[i])->pid), NULL, philo_func, data[i]) != 0)
-			return (1);
+			return ;
 		i++;
 	}
 	i = 0;
 	while (i < num)
 		pthread_join(data[i++]->pid, NULL);
 	pthread_join(moniter->pid, NULL);
-	return (0);
+	return ;
 }
 
 void	mutex_del(t_data **data, t_moniter *moniter, int num)

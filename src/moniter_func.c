@@ -6,7 +6,7 @@
 /*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 12:22:02 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/04 22:53:57 by ichinoseyuu      ###   ########.fr       */
+/*   Updated: 2023/05/05 14:16:14 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	moni_time_check(t_moniter *moniter, t_data *data)
 int	moni_eat_count_check(t_moniter *moniter, t_data *data, int *num)
 {
 	pthread_mutex_lock(&data->eat_mutex);
-	if (data->eat_count == moniter->must_eat)
+	if (data->eat_count >= moniter->must_eat)
 	{
 		*num += 1;
 		if (*num == moniter->philo_count)
@@ -65,10 +65,10 @@ void	*moniter_func(void *arg)
 	t_data		**data;
 	int			num;
 
-	num = 0;
 	moniter = (t_moniter *)arg;
 	while (1)
 	{
+		num = 0;
 		data = moniter->data;
 		while (*data)
 		{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 12:45:42 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/04 17:46:26 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/05 14:14:51 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ t_data		**malloc_data(int argc, char **argv);
 int			init_data(char **argv, t_data **data, t_moniter *monu);
 t_moniter	*make_moniter_init(t_data **main, char **argv);
 //main func
-int			philo(t_data **data, t_moniter *moniter, int num);
+void		philo(t_data **data, t_moniter *moniter, int num);
 void		mutex_del(t_data **data, t_moniter *moniter, int num);
 //moniter
 int			moni_time_check(t_moniter *moniter, t_data *data);
@@ -71,17 +71,14 @@ void		philo_eat_left(t_data *data, t_moniter *moniter);
 void		philo_eat_right(t_data *data, t_moniter *moniter);
 void		philo_sleep(t_data *data, t_moniter *moniter);
 void		*philo_func(void *arg);
-
 //set_time
 long		get_now_time(void);
 void		ft_usleep(long start, long time_to);
 //
-void		free_all(t_data	**data);
+void		free_data(t_data **data);
+void		free_all(t_data **data, t_moniter *moniter);
 void		print_status(t_data *data, t_moniter *moniter, int status);
 //only_one
-int			only_one(t_data *data);
+void		only_one(t_data *data);
 void		*only_one_func(void *arg);
-
-
-
 #endif
