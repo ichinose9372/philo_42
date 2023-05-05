@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 12:51:07 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/04 17:13:11 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/05 14:08:36 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,21 @@ int	main(int argc, char	**argv)
 	t_moniter		*moniter;
 
 	data = malloc_data(argc, argv);
+	if (!data)
+		return (0);
 	moniter = make_moniter_init(data, argv);
-	if (moniter == NULL || data == NULL)
+	if (!moniter)
+	{
+		free_data(data);
 		return (0);
+	}
 	if (init_data(argv, data, moniter))
+	{
+		free_all(data, moniter);
 		return (0);
+	}
 	philo(data, moniter, philo_atoi(argv[1]));
 	mutex_del(data, moniter, philo_atoi(argv[1]));
-	free_all(data);
-	free(moniter);
+	free_all(data, moniter);
 	return (0);
 }
