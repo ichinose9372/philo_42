@@ -6,7 +6,7 @@
 /*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/01 14:16:28 by ichinoseyuu       #+#    #+#             */
-/*   Updated: 2023/05/05 22:28:58 by ichinoseyuu      ###   ########.fr       */
+/*   Updated: 2023/05/06 10:23:35 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,11 @@ t_moniter	*make_moniter_init(t_data **main, char **argv)
 	if (argv[5])
 		moniter->must_eat = philo_atoi(argv[5]);
 	else
-		moniter->must_eat = -1;
+		moniter->must_eat = -2;
+	if (moniter->philo_count == -1 || moniter->t_die == -1
+		|| moniter->t_eat == -1 || moniter->t_sleep == -1
+		|| (argv[5] && moniter->must_eat == -1))
+		return (NULL);
 	moniter->stop_flag = 0;
 	if (pthread_mutex_init(&(moniter)->flag_mutex, NULL) != 0)
 		return (NULL);
