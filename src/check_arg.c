@@ -6,50 +6,45 @@
 /*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 22:26:08 by ichinoseyuu       #+#    #+#             */
-/*   Updated: 2023/05/05 14:20:53 by ichinoseyuu      ###   ########.fr       */
+/*   Updated: 2023/05/06 10:28:17 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	philo_atoi(char *str)
+static int	ft_isspace(char c)
 {
-	int	len;
-
-	len = 0;
-	if (*str == '+')
-		str++;
-	while (*str)
-	{
-		len += *str - '0';
-		len *= 10;
-		str++;
-		if (len >= INT_MAX)
-		{
-			len = INT_MAX;
-			return (len);
-		}
-	}
-	len /= 10;
-	return (len);
+	c = (unsigned char)c;
+	if (c == '\t' || c == '\n' || c == '\v'
+		|| c == '\f' || c == '\r' || c == ' ')
+		return (1);
+	return (0);
 }
 
-int	ft_digit(char *str)
+int	philo_atoi(char *str)
 {
-	int	i;
+	long	number;
 
-	i = 0;
-	if (!(str[i] >= '0' && str[i] <= '9')
-		&& !(str[i] == '+' && str[i + 1] != '\0'))
-		return (1);
-	i++;
-	while (str[i])
+	number = 0;
+	while (ft_isspace(*str))
+		str++;
+	if (*str == '+' || *str == '-')
 	{
-		if (!(str[i] >= '0' && str[i] <= '9'))
-			return (1);
-		i++;
+		if (*str == '-')
+			return (-1);
+		str++;
+		if (!(*str >= '0' && *str <= '9'))
+			return (-1);
 	}
-	return (0);
+	while (*str >= '0' && *str <= '9')
+	{
+		number *= 10;
+		number += *str - '0';
+		str++;
+	}
+	if (number > INT_MAX)
+		return (-1);
+	return (number);
 }
 
 int	check_args(int argc, char **argv)
@@ -58,13 +53,6 @@ int	check_args(int argc, char **argv)
 
 	if ((argc < 5) || (argc > 6))
 		return (-1);
-	i = 1;
-	while (argv[i])
-	{
-		if (ft_digit(argv[i++]))
-			return (-1);
-	}
-	i = 0;
 	i = philo_atoi(argv[1]);
 	if (i == -1)
 		return (-1);

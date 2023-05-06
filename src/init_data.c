@@ -6,7 +6,7 @@
 /*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/01 14:16:28 by ichinoseyuu       #+#    #+#             */
-/*   Updated: 2023/05/05 14:06:03 by ichinoseyuu      ###   ########.fr       */
+/*   Updated: 2023/05/06 10:23:35 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	data_other_set(t_data **data, int num, t_moniter *mon)
 	i = 0;
 	while (i < num)
 	{
-		data[i]->num_philo = i;
+		data[i]->num_philo = i + 1;
 		data[i]->eat_count = 0;
 		data[i]->start_eat = get_now_time();
 		data[i]->last_eat = get_now_time();
@@ -83,6 +83,12 @@ t_moniter	*make_moniter_init(t_data **main, char **argv)
 	moniter->t_sleep = philo_atoi(argv[4]);
 	if (argv[5])
 		moniter->must_eat = philo_atoi(argv[5]);
+	else
+		moniter->must_eat = -2;
+	if (moniter->philo_count == -1 || moniter->t_die == -1
+		|| moniter->t_eat == -1 || moniter->t_sleep == -1
+		|| (argv[5] && moniter->must_eat == -1))
+		return (NULL);
 	moniter->stop_flag = 0;
 	if (pthread_mutex_init(&(moniter)->flag_mutex, NULL) != 0)
 		return (NULL);
