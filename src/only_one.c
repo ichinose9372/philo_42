@@ -6,7 +6,7 @@
 /*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 16:54:37 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/05 14:11:42 by ichinoseyuu      ###   ########.fr       */
+/*   Updated: 2023/05/06 21:30:17 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	*only_one_func(void *arg)
 
 	data = (t_data *)arg;
 	printf("%ld %d has taken a fork\n", get_now_time(), data->num_philo);
+	printf("%ld %d died\n", get_now_time(), data->num_philo);
 	pthread_exit(NULL);
 }
 
