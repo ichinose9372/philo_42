@@ -6,7 +6,7 @@
 /*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 12:21:39 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/04 23:06:28 by ichinoseyuu      ###   ########.fr       */
+/*   Updated: 2023/05/05 22:23:41 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int	flag_check(t_moniter *moniter)
 void	philo_eat_left(t_data *data, t_moniter *moniter)
 {
 	pthread_mutex_lock(data->left_fork);
+	print_status(data, moniter, 1);
 	pthread_mutex_lock(data->right_fork);
 	print_status(data, moniter, 1);
 	pthread_mutex_lock(&data->start_mutex);
@@ -50,6 +51,7 @@ void	philo_eat_left(t_data *data, t_moniter *moniter)
 void	philo_eat_right(t_data *data, t_moniter *moniter)
 {
 	pthread_mutex_lock(data->right_fork);
+	print_status(data, moniter, 1);
 	pthread_mutex_lock(data->left_fork);
 	print_status(data, moniter, 1);
 	pthread_mutex_lock(&data->start_mutex);
@@ -83,6 +85,8 @@ void	*philo_func(void *arg)
 	while (1)
 	{
 		print_status(data, moniter, 0);
+		if (flag_check(moniter))
+			break ;
 		if (data->num_philo % 2 == 1)
 			philo_eat_right(data, moniter);
 		else

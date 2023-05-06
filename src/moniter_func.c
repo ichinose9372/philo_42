@@ -6,7 +6,7 @@
 /*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 12:22:02 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/05 14:16:14 by ichinoseyuu      ###   ########.fr       */
+/*   Updated: 2023/05/05 22:28:27 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,29 +15,24 @@
 int	moni_time_check(t_moniter *moniter, t_data *data)
 {
 	pthread_mutex_lock(&data->start_mutex);
-	pthread_mutex_lock(&data->last_mutex);
-	if (moniter->t_die < data->start_eat - data->last_eat)
+	if (moniter->t_die <= get_now_time() - data->start_eat)
 	{
-		pthread_mutex_unlock(&data->last_mutex);
 		pthread_mutex_unlock(&data->start_mutex);
 		pthread_mutex_lock(&moniter->flag_mutex);
 		moniter->stop_flag = 1;
-		printf("%ld %d died\n", get_now_time(), data->num_philo);
 		pthread_mutex_unlock(&moniter->flag_mutex);
+		printf("%ld %d died\n", get_now_time(), data->num_philo);
 		return (1);
 	}
 	else
-	{
 		pthread_mutex_unlock(&data->start_mutex);
-		pthread_mutex_unlock(&data->last_mutex);
-	}
 	return (0);
 }
 
 int	moni_eat_count_check(t_moniter *moniter, t_data *data, int *num)
 {
 	pthread_mutex_lock(&data->eat_mutex);
-	if (data->eat_count >= moniter->must_eat)
+	if (moniter->must_eat > 0 && data->eat_count >= moniter->must_eat)
 	{
 		*num += 1;
 		if (*num == moniter->philo_count)
