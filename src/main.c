@@ -6,7 +6,7 @@
 /*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 12:51:07 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/05 14:08:36 by ichinoseyuu      ###   ########.fr       */
+/*   Updated: 2023/05/06 10:45:42 by ichinoseyuu      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,3 +55,8 @@ int	main(int argc, char	**argv)
 	free_all(data, moniter);
 	return (0);
 }
+
+// __attribute__((destructor)) static void destructor()
+// {
+//     system("leaks -q philo");
+// }
