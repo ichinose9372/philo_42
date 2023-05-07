@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moniter_func.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
+/*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 12:22:02 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/05 22:28:27 by ichinoseyuu      ###   ########.fr       */
+/*   Updated: 2023/05/07 11:24:43 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,12 +68,11 @@ void	*moniter_func(void *arg)
 		while (*data)
 		{
 			if (moni_time_check(moniter, *data))
-				return (NULL);
+				pthread_exit(NULL);
 			if (moni_eat_count_check(moniter, *data, &num))
-				return (NULL);
+				pthread_exit(NULL);
 			usleep(30);
 			data++;
 		}
 	}
-	pthread_exit(NULL);
 }
