@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_func.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ichinoseyuuki <ichinoseyuuki@student.42    +#+  +:+       +#+        */
+/*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 12:21:39 by yichinos          #+#    #+#             */
-/*   Updated: 2023/05/06 10:42:50 by ichinoseyuu      ###   ########.fr       */
+/*   Updated: 2023/05/08 14:42:49 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ void	philo_eat_left(t_data *data, t_moniter *moniter)
 	print_status(data, moniter, 2);
 	pthread_mutex_lock(&data->eat_mutex);
 	data->eat_count++;
-	ft_usleep(data->start_eat, moniter->t_eat);
 	pthread_mutex_unlock(&data->eat_mutex);
+	ft_usleep(data->start_eat, moniter->t_eat);
 	pthread_mutex_unlock(data->right_fork);
 	pthread_mutex_unlock(data->left_fork);
 	pthread_mutex_lock(&data->last_mutex);
@@ -60,8 +60,8 @@ void	philo_eat_right(t_data *data, t_moniter *moniter)
 	print_status(data, moniter, 2);
 	pthread_mutex_lock(&data->eat_mutex);
 	data->eat_count++;
-	ft_usleep(data->start_eat, moniter->t_eat);
 	pthread_mutex_unlock(&data->eat_mutex);
+	ft_usleep(data->start_eat, moniter->t_eat);
 	pthread_mutex_unlock(data->left_fork);
 	pthread_mutex_unlock(data->right_fork);
 	pthread_mutex_lock(&data->last_mutex);
@@ -97,5 +97,5 @@ void	*philo_func(void *arg)
 		if (flag_check(moniter))
 			break ;
 	}
-	pthread_exit(NULL);
+	return (NULL);
 }
