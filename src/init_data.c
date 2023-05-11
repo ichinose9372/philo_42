@@ -6,7 +6,7 @@
 /*   By: yichinos <yichinos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/01 14:16:28 by ichinoseyuu       #+#    #+#             */
-/*   Updated: 2023/05/08 14:39:53 by yichinos         ###   ########.fr       */
+/*   Updated: 2023/05/11 14:02:17 by yichinos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	data_other_set(t_data **data, int num, t_moniter *mon)
 		if (i == num - 1)
 		{
 			data[i]->left_fork = &(data[i]->fork);
-			data[i]->right_fork = &(data[(i + 1) % num]->fork);
+			data[i]->right_fork = &(data[0]->fork);
 		}
 		else
 		{
